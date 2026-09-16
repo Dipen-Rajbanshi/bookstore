@@ -9,14 +9,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import fi.haagahelia.bookstore.domain.Book;
 import fi.haagahelia.bookstore.domain.BookRepository;
+import fi.haagahelia.bookstore.domain.CategoryRepository;
 
 @Controller
 public class BookController {
 
     private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
 
-    public BookController(BookRepository bookRepository) {
+    public BookController(BookRepository bookRepository, CategoryRepository categoryRepository) {
         this.bookRepository = bookRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping("/index")
@@ -33,6 +36,7 @@ public class BookController {
     @GetMapping("/addbook")
     public String addBookForm(Model model) {
         model.addAttribute("book", new Book());
+        model.addAttribute("categories", categoryRepository.findAll());
         return "addbook";
     }
 
@@ -46,6 +50,7 @@ public class BookController {
     public String editBookForm(@PathVariable Long id, Model model) {
         Book book = bookRepository.findById(id).orElseThrow();
         model.addAttribute("book", book);
+        model.addAttribute("categories", categoryRepository.findAll());
         return "addbook";
     }
 
