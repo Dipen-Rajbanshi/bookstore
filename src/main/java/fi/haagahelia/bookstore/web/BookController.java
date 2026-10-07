@@ -1,15 +1,19 @@
 package fi.haagahelia.bookstore.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import fi.haagahelia.bookstore.domain.Book;
 import fi.haagahelia.bookstore.domain.BookRepository;
 import fi.haagahelia.bookstore.domain.CategoryRepository;
+import java.util.Optional;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class BookController {
@@ -54,8 +58,24 @@ public class BookController {
         return "addbook";
     }
 
+    @GetMapping("/books")
+    public @ResponseBody Iterable<Book> bookListRest() {
+        return bookRepository.findAll();
+    }
+
+    @GetMapping("/books/{id}")
+    public @ResponseBody Optional<Book> findBookRest(@PathVariable Long id) {
+        return bookRepository.findById(id);
+    }
+
+    @RequestMapping(value = "/login")
+    public String login() {
+        return "login";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/deletebook/{id}")
-    public String deleteBook(@PathVariable Long id) {
+    public String deleteBook(@PathVariable("id") Long id) {
         bookRepository.deleteById(id);
         return "redirect:/booklist";
     }

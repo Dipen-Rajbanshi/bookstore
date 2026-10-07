@@ -5,7 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import fi.haagahelia.bookstore.domain.AppUser;
+import fi.haagahelia.bookstore.domain.AppUserRepository;
 import fi.haagahelia.bookstore.domain.Book;
 import fi.haagahelia.bookstore.domain.BookRepository;
 import fi.haagahelia.bookstore.domain.Category;
@@ -19,7 +22,10 @@ public class BookstoreApplication {
 	}
 
 	@Bean
-	public CommandLineRunner demo(BookRepository bookRepository, CategoryRepository categoryRepository) {
+	public CommandLineRunner demo(BookRepository bookRepository,
+			CategoryRepository categoryRepository,
+			AppUserRepository userRepository,
+			PasswordEncoder passwordEncoder) {
 		return (args) -> {
 			Category fiction = categoryRepository.save(new Category("Fiction"));
 			Category classics = categoryRepository.save(new Category("Classics"));
@@ -36,6 +42,9 @@ public class BookstoreApplication {
 			Book book3 = new Book("1984", "George Orwell", 1949, "9780451524935", 8.99);
 			book3.setCategory(dystopian);
 			bookRepository.save(book3);
+
+			userRepository.save(new AppUser("user", passwordEncoder.encode("user"), "user@email.com", "USER"));
+			userRepository.save(new AppUser("admin", passwordEncoder.encode("admin"), "admin@email.com", "ADMIN"));
 		};
 	}
 
