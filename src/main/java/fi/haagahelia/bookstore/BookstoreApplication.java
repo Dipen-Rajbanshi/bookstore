@@ -27,24 +27,29 @@ public class BookstoreApplication {
 			AppUserRepository userRepository,
 			PasswordEncoder passwordEncoder) {
 		return (args) -> {
-			Category fiction = categoryRepository.save(new Category("Fiction"));
-			Category classics = categoryRepository.save(new Category("Classics"));
-			Category dystopian = categoryRepository.save(new Category("Dystopian"));
 
-			Book book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 1925, "9780743273565", 10.99);
-			book1.setCategory(fiction);
-			bookRepository.save(book1);
+			if (categoryRepository.count() == 0) {
+				Category fiction = categoryRepository.save(new Category("Fiction"));
+				Category classics = categoryRepository.save(new Category("Classics"));
+				Category dystopian = categoryRepository.save(new Category("Dystopian"));
 
-			Book book2 = new Book("To Kill a Mockingbird", "Harper Lee", 1960, "9780061120084", 7.99);
-			book2.setCategory(classics);
-			bookRepository.save(book2);
+				Book book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 1925, "9780743273565", 10.99);
+				book1.setCategory(fiction);
+				bookRepository.save(book1);
 
-			Book book3 = new Book("1984", "George Orwell", 1949, "9780451524935", 8.99);
-			book3.setCategory(dystopian);
-			bookRepository.save(book3);
+				Book book2 = new Book("To Kill a Mockingbird", "Harper Lee", 1960, "9780061120084", 7.99);
+				book2.setCategory(classics);
+				bookRepository.save(book2);
 
-			userRepository.save(new AppUser("user", passwordEncoder.encode("user"), "user@email.com", "USER"));
-			userRepository.save(new AppUser("admin", passwordEncoder.encode("admin"), "admin@email.com", "ADMIN"));
+				Book book3 = new Book("1984", "George Orwell", 1949, "9780451524935", 8.99);
+				book3.setCategory(dystopian);
+				bookRepository.save(book3);
+			}
+
+			if (userRepository.count() == 0) {
+				userRepository.save(new AppUser("user", passwordEncoder.encode("user"), "user@email.com", "USER"));
+				userRepository.save(new AppUser("admin", passwordEncoder.encode("admin"), "admin@email.com", "ADMIN"));
+			}
 		};
 	}
 
